@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atelier — Plateforme vidéo multi-agents</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f3ee;--sf:#fffdf9;--tx:#1b1a17;--mu:#6d685f;--bd:#e3ddd1;--ac:#c2410c;--ac2:#0f766e;--ok:#166534;--wa:#a16207;--er:#b91c1c;--in:#1d4ed8}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14130f;--sf:#1d1b16;--tx:#f1ede4;--mu:#a39d8f;--bd:#34312a;--ac:#fb923c;--ac2:#2dd4bf;--ok:#4ade80;--wa:#facc15;--er:#f87171;--in:#93c5fd}}
+:root[data-theme="dark"]{--bg:#14130f;--sf:#1d1b16;--tx:#f1ede4;--mu:#a39d8f;--bd:#34312a;--ac:#fb923c;--ac2:#2dd4bf;--ok:#4ade80;--wa:#facc15;--er:#f87171;--in:#93c5fd}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{font-family:Georgia,"Iowan Old Style",serif;font-weight:600;letter-spacing:-.01em;margin:0}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+nav{border-right:1px solid var(--bd);padding:20px 14px;position:sticky;top:0;align-self:start;height:100vh;overflow:auto}
+.logo{font-family:Georgia,serif;font-size:22px;padding:0 10px 18px}.logo b{color:var(--ac)}
+nav a{display:block;padding:9px 12px;border-radius:8px;color:var(--mu);text-decoration:none;font-weight:500}
+nav a:hover{background:var(--sf)}nav a.on{background:var(--sf);color:var(--tx);box-shadow:inset 3px 0 var(--ac)}
+main{padding:28px clamp(16px,4vw,44px);max-width:1100px;width:100%}
+.banner{background:color-mix(in srgb,var(--wa) 14%,var(--sf));border:1px solid color-mix(in srgb,var(--wa) 45%,var(--bd));padding:10px 14px;border-radius:10px;margin-bottom:22px;font-size:14px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:16px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.sub{color:var(--mu);margin:4px 0 22px}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px solid currentColor}
+.s-wait{color:var(--mu)}.s-run{color:var(--in)}.s-val{color:var(--wa)}.s-done{color:var(--ok)}.s-err{color:var(--er)}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
+.st{flex:1;min-width:110px;padding:9px 10px;border:1px solid var(--bd);border-radius:10px;background:var(--sf);font-size:13px;color:var(--mu)}
+.st.done{color:var(--ok);border-color:var(--ok)}.st.cur{color:var(--ac);border-color:var(--ac);font-weight:600}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:90px;resize:vertical}
+.row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+button{font:inherit;font-weight:600;padding:10px 16px;border-radius:9px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer}
+button.pr{background:var(--ac);border-color:var(--ac);color:#fff}button:hover{filter:brightness(.96)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.big{font-family:Georgia,serif;font-size:30px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--bd)}
+.scroll{overflow-x:auto}
+.mu{color:var(--mu)}.sm{font-size:13px}
+.preview{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.scr{background:linear-gradient(160deg,#1f2937,#7c2d12);border-radius:12px;color:#fff;display:flex;align-items:flex-end;padding:10px;font-size:12px}
+.scr.h{width:260px;aspect-ratio:16/9}.scr.v{width:110px;aspect-ratio:9/16}
+.tl{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--bd);margin-top:8px}
+.tl i{display:block;height:100%;border-right:1px solid var(--bg);font-style:normal;font-size:11px;padding:8px 6px;color:#fff;white-space:nowrap;overflow:hidden}
+pre{white-space:pre-wrap;font:13px/1.6 ui-monospace,Menlo,monospace;background:var(--bg);border:1px solid var(--bd);padding:12px;border-radius:10px}
+@media(max-width:760px){.app{grid-template-columns:1fr}nav{position:static;height:auto;display:flex;gap:4px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--bd);padding:10px}.logo{display:none}nav a{white-space:nowrap}}
+</style>
+</head>
+<body>
+<div class="app">
+<nav id="nav"><div class="logo">Atelier<b>.</b></div></nav>
+<main><div class="banner"><b>Mode démonstration (scripts IA actifs).</b> Aucune intégration n’est configurée : aucun compte YouTube, TikTok ou Instagram n’est connecté, aucune vidéo n’est réellement générée ni publiée. Les chiffres affichés sont des exemples, pas des données réelles.</div><div id="v"></div></main>
+</div>
+<script>
+const NAV=[["dashboard","Tableau de bord"],["creation","Création vidéo"],["scripts","Scripts et idées"],["studio","Studio vidéo"],["comments","Commentaires"],["calendar","Calendrier"],["analytics","Analyses"],["brand","Paramètres de marque"]];
+const S={brief:{topic:"",niche:"",audience:"",lang:"Français",tone:"Pédagogique",style:"Épuré",dur:"8 min"},step:0,script:null,approved:false,
+ comments:[{a:"Awa",t:"Super vidéo, vous pouvez faire la suite sur le montage ?",s:"Positif",r:"Merci Awa ! La suite arrive bientôt, restez connectée.",d:false},{a:"Marc",t:"Le son est trop faible à 3:20.",s:"Critique",r:"Merci du retour Marc, nous corrigeons l’audio dans la prochaine version.",d:false},{a:"Anonyme",t:"Contactez-moi pour un remboursement urgent.",s:"Sensible",r:"",d:false}],
+ posts:[{t:"Vidéo longue — exemple",p:"YouTube",st:"À valider",w:"Non programmé"},{t:"Short 1 — exemple",p:"YouTube Shorts",st:"Brouillon",w:"Non programmé"},{t:"Reel 1 — exemple",p:"Instagram",st:"Brouillon",w:"Non programmé"}],
+ brand:{name:"",niche:"",tone:"Pédagogique",color:"#c2410c"}};
+const STEPS=["Prompt / import","Script","Production","Montage","Validation","Publication"];
+const AG=[["Idées et scripts","s-wait","En attente"],["Production vidéo","s-wait","En attente"],["Montage","s-wait","En attente"],["Communauté","s-wait","En attente"],["Publication","s-wait","En attente"],["Analyses","s-wait","En attente"]];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const chip=(c,t)=>`<span class="chip ${c}">${t}</span>`;
+function steps(){return `<div class="steps">${STEPS.map((s,i)=>`<div class="st ${i<S.step?"done":i==S.step?"cur":""}">${i+1}. ${s}</div>`).join("")}</div>`}
+const V={
+dashboard(){const ag=[["Idées et scripts",S.script?"s-val":"s-wait",S.script?"À valider":"En attente"],["Production vidéo","s-wait","En attente"],["Montage","s-wait","En attente"],["Communauté",S.comments.some(c=>!c.d)?"s-val":"s-done",S.comments.some(c=>!c.d)?"À valider":"Terminée"],["Publication","s-wait","Non configurée"],["Analyses","s-wait","Aucune donnée réelle"]];
+return `<h1>Bonjour 👋</h1><p class="sub">Voici l’état de votre atelier.</p>${steps()}
+<div class="grid">${ag.map(a=>`<div class="card"><h3>${a[0]}</h3><p class="mu sm">Agent spécialisé</p>${chip(a[1],a[2])}</div>`).join("")}</div>
+<div class="card"><h3>Prochaines étapes</h3><p>${S.script?"Relisez et validez le script dans <a href='#scripts'>Scripts et idées</a>.":"Commencez par <a href='#creation'>créer une vidéo</a> à partir d’un sujet."}</p></div>
+<div class="card"><h3>Ce qui fonctionne vraiment ici</h3><p class="sm">Le parcours, la saisie, l’édition de plan et de script (gabarit local), la validation, la boîte de commentaires et le calendrier. Ce qui nécessite un branchement : génération vidéo et voix, import réel de fichiers, connexion aux réseaux, publication, statistiques.</p></div>`},
+creation(){const b=S.brief,o=(a,v)=>a.map(x=>`<option ${x==v?"selected":""}>${x}</option>`).join("");
+return `<h1>Création vidéo</h1><p class="sub">Partez d’un sujet ou d’une vidéo brute.</p>${steps()}
+<div class="card"><label>Sujet ou prompt</label><textarea id="topic" placeholder="Ex. : Comment lancer sa boutique en ligne en 30 jours">${esc(b.topic)}</textarea>
+<div class="row"><div><label>Niche</label><input id="niche" value="${esc(b.niche)}"></div><div><label>Public cible</label><input id="audience" value="${esc(b.audience)}"></div></div>
+<div class="row"><div><label>Langue</label><select id="lang">${o(["Français","Anglais","Espagnol","Arabe","Wolof (script seul)"],b.lang)}</select></div>
+<div><label>Ton</label><select id="tone">${o(["Pédagogique","Inspirant","Humoristique","Sérieux"],b.tone)}</select></div>
+<div><label>Style visuel</label><select id="style">${o(["Épuré","Dynamique","Cinématique","Illustré"],b.style)}</select></div>
+<div><label>Durée</label><select id="dur">${o(["60 s","3 min","8 min","15 min"],b.dur)}</select></div></div>
+<label>Vidéo brute (optionnel)</label><input type="file" id="raw" accept="video/*"><p class="mu sm">Le fichier reste dans votre navigateur ; le montage automatique n’est pas branché en démo.</p>
+<div class="acts"><button class="pr" onclick="gen()">Générer le concept et le script</button></div></div>`},
+scripts(){if(!S.script)return `<h1>Scripts et idées</h1><p class="sub">Aucun script pour l’instant.</p><div class="card">Créez d’abord un sujet dans <a href="#creation">Création vidéo</a>.</div>`;
+return `<h1>Scripts et idées</h1><p class="sub">Modifiez librement avant production. Script rédigé par IA : aucune source n’est citée, vérifiez chaque fait.</p>${steps()}
+<div class="card"><h3>Script — vidéo longue</h3><textarea id="sc" style="min-height:320px">${esc(S.script)}</textarea>
+<div class="acts"><button onclick="S.script=document.getElementById('sc').value;go()">Enregistrer</button><button class="pr" onclick="approve()" ${S.approved?"disabled":""}>${S.approved?"Script validé":"Valider le script"}</button></div></div>
+<div class="card"><h3>Idées du jour (exemples)</h3><div id="ideas"><p class="mu sm">Idées générées par IA selon votre niche. Ce n’est pas une analyse de tendances réelle.</p></div><div class="acts"><button onclick="ideas()">Générer 5 idées</button></div></div>`},
+studio(){if(!S.approved)return `<h1>Studio vidéo</h1><p class="sub">Validez d’abord le script pour débloquer la production.</p><div class="card">Étape actuelle : ${STEPS[S.step]}. <a href="#scripts">Aller aux scripts</a></div>`;
+const seg=[["Intro",10,"#7c2d12"],["Chap. 1",25,"#0f766e"],["Chap. 2",25,"#1d4ed8"],["Chap. 3",25,"#6d28d9"],["Conclusion",15,"#be123c"]];
+return `<h1>Studio vidéo</h1><p class="sub">Aperçu de structure. Le rendu réel n’est pas généré en démo.</p>${steps()}
+<div class="card"><h3>Vidéo longue — ${esc(S.brief.dur)}</h3><div class="preview"><div class="scr h">Aperçu 16:9 (maquette)</div><div><p class="sm mu">Voix, musique et sous-titres : à configurer</p><div class="acts"><button>Police des sous-titres</button><button>Couleur</button><button>Remplacer une scène</button></div></div></div>
+<div class="tl">${seg.map(s=>`<i style="width:${s[1]}%;background:${s[2]}">${s[0]}</i>`).join("")}</div></div>
+<div class="card"><h3>Extraits verticaux proposés (maquettes)</h3><div class="preview">${[1,2,3].map(i=>`<div class="scr v">Extrait ${i}</div>`).join("")}</div></div>
+<div class="card"><h3>Outils de montage (IA)</h3><div class="acts"><button onclick="scenes()">Découper en scènes</button><button onclick="subs()">Générer les sous-titres</button><button onclick="dlsrt()">Télécharger le .srt</button></div><p class="mu sm">Minutage estimé par l’IA, non mesuré sur une vraie vidéo.</p><div id="o1"></div><div id="o2"></div></div><div class="acts"><button disabled title="Moteur de rendu non configuré">Exporter (non configuré)</button><button class="pr" onclick="S.step=4;go()">Passer à la validation</button></div>`},
+comments(){return `<h1>Commentaires</h1><p class="sub">Exemples. Aucune réponse n’est publiée sans votre accord, et rien n’est envoyé en démo.</p>${S.comments.map((c,i)=>`<div class="card"><b>${c.a}</b> ${chip(c.s=="Sensible"?"s-err":c.s=="Critique"?"s-val":"s-done",c.s)}<p>${esc(c.t)}</p>${c.s=="Sensible"?`<p class="sm" style="color:var(--er)">Nécessite une intervention humaine.</p>`:`<textarea id="r${i}">${esc(c.r)}</textarea>`}<div class="acts">${c.s=="Sensible"?"":`<button onclick="aiReply(${i})">Suggérer (IA)</button><button class="pr" onclick="S.comments[${i}].d=true;go()" ${c.d?"disabled":""}>${c.d?"Validée (non envoyée)":"Valider la réponse"}</button>`}</div></div>`).join("")}`},
+calendar(){return `<h1>Calendrier de publication</h1><p class="sub">Programmation réelle indisponible : aucun compte connecté.</p><div class="card scroll"><table><tr><th>Contenu</th><th>Plateforme</th><th>État</th><th>Date</th></tr>${S.posts.map(p=>`<tr><td>${p.t}</td><td>${p.p}</td><td>${chip(p.st=="À valider"?"s-val":"s-wait",p.st)}</td><td>${p.w}</td></tr>`).join("")}</table></div><div class="card"><h3>Titres, descriptions et hashtags (IA)</h3><div class="acts"><button onclick="pubmeta()">Générer pour les 3 plateformes</button></div><div id="o3"></div></div><div class="card"><h3>Comptes</h3>${["YouTube","TikTok","Instagram"].map(x=>`<div class="acts" style="justify-content:space-between;align-items:center"><span>${x} — ${chip("s-wait","Non connecté")}</span><button disabled>Connecter (OAuth requis)</button></div>`).join("")}</div>`},
+analytics(){return `<h1>Analyses</h1><p class="sub">Aucune donnée réelle : les plateformes ne sont pas connectées.</p><div class="grid">${["Vues","Durée moyenne","Engagement","Croissance"].map(k=>`<div class="card"><div class="mu sm">${k}</div><div class="big">—</div>${chip("s-wait","Pas de données")}</div>`).join("")}</div><div class="card"><h3>Importer vos statistiques</h3><p class="sm">Exportez un CSV depuis YouTube Studio (Analyses, puis Avancé, puis Exporter) et importez-le ici. Il reste dans votre navigateur. Sans fichier, aucune recommandation : elle ne serait qu’une estimation.</p><input type="file" accept=".csv,.tsv,.txt" onchange="csv(this)"><div id="o4"></div></div>`},
+brand(){const b=S.brand;return `<h1>Paramètres de marque</h1><p class="sub">Ces réglages guident tous les agents.</p><div class="card"><div class="row"><div><label>Nom</label><input id="bn" value="${esc(b.name)}"></div><div><label>Niche</label><input id="bi" value="${esc(b.niche)}"></div><div><label>Ton</label><input id="bt" value="${esc(b.tone)}"></div><div><label>Couleur</label><input type="color" id="bc" value="${b.color}"></div></div><div class="acts"><button class="pr" onclick="S.brand={name:bn.value,niche:bi.value,tone:bt.value,color:bc.value};go()">Enregistrer (session)</button></div><p class="mu sm">Conservé uniquement pendant cette session.</p></div>`}};
+async function ai(p,el){const sm=await claude.use('sample');if(!sm){el.textContent='IA indisponible.';return null}el.textContent='Génération en cours…';try{const r=await sm(p,{cache:false,onText:({text})=>{el.innerHTML='<pre>'+esc(text)+'</pre>'}});el.innerHTML='<pre>'+esc(r.text)+'</pre>';return r.text}catch(e){el.textContent=e.code==='not_granted'?'Autorisation refusée.':'Erreur : '+(e.message||'réessayez');return null}}
+const RULES=' N’invente aucune source, statistique ni citation.';
+function scenes(){if(!S.script)return;ai('Découpe ce script en scènes pour un monteur : numéro, durée, narration, visuel suggéré, ambiance musicale. Script :\n'+S.script+RULES,document.getElementById('o1'))}
+async function subs(){const t=await ai('Transforme la narration de ce script en sous-titres SRT valides pour une vidéo de '+S.brief.dur+', 42 caractères max par ligne, minutage estimé. Réponds uniquement avec le SRT.\n'+S.script,document.getElementById('o2'));if(t)S.srt=t}
+async function dlsrt(){if(!S.srt){alert('Générez d’abord les sous-titres.');return}const d=await claude.use('downloads');if(!d){alert('Téléchargement indisponible ici.');return}try{await d.save({filename:'sous-titres.srt',data:S.srt})}catch(e){}}
+function pubmeta(){ai('Pour cette vidéo, propose pour YouTube, TikTok et Instagram Reels : titre, description ou légende, 8 hashtags, idée de miniature. Sujet : '+(S.brief.topic||'non précisé')+'. Niche : '+S.brief.niche+'. Langue : '+S.brief.lang+'. Script :\n'+(S.script||'').slice(0,3000)+RULES,document.getElementById('o3'))}
+async function aiReply(i){const sm=await claude.use('sample');const t=document.getElementById('r'+i);if(!sm||!t)return;const old=t.value;t.value='…';try{const r=await sm('Rédige la réponse à ce commentaire en '+S.brief.lang+', ton '+S.brief.tone+', 2 phrases maximum, sans rien promettre. Commentaire : '+S.comments[i].t+'. Réponds uniquement avec la réponse.',{cache:false});t.value=r.text.trim();S.comments[i].r=t.value}catch(e){t.value=old}}
+function csv(inp){const f=inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const rows=String(rd.result).trim().split(/\r?\n/).map(l=>l.split(/[,;\t]/));const h=rows[0],b=rows.slice(1);const sums=h.map((_,j)=>{const v=b.map(r=>Number(String(r[j]||'').replace(/\s/g,'').replace(',','.')));return v.length&&v.every(x=>isFinite(x))?Math.round(v.reduce((a,x)=>a+x,0)*100)/100:'—'});
+const o=document.getElementById('o4');o.innerHTML='<p class="sm">'+b.length+' lignes importées depuis votre fichier (données réelles).</p><div class="scroll"><table><tr>'+h.map(x=>'<th>'+esc(x)+'</th>').join('')+'</tr><tr>'+sums.map(s=>'<td>'+s+'</td>').join('')+'</tr></table></div><p class="mu sm">Ligne affichée : totaux des colonnes entièrement numériques.</p><div id="o5"></div>';
+ai('Analyse ces statistiques réelles exportées par l’utilisateur (CSV) et donne 5 recommandations concrètes sur les contenus, le montage et la publication. Distingue observations et hypothèses, ne conclus rien que les données ne montrent pas.\n'+rows.slice(0,60).map(r=>r.join(' | ')).join('\n'),document.getElementById('o5'))};rd.readAsText(f)}
+async function ideas(){const sm=await claude.use('sample');const el=document.getElementById('ideas');if(!sm){el.textContent='IA indisponible dans ce contexte.';return}
+el.textContent='Génération en cours…';const b=S.brief;
+try{const r=await sm('Tu es stratège de contenu vidéo. Niche : '+(b.niche||'générale')+'. Public : '+(b.audience||'grand public')+'. Langue : '+b.lang+'. Donne 5 idées de vidéos (titre + accroche en une phrase), en liste numérotée. N’invente aucun chiffre ni source.',{cache:false});el.innerHTML='<pre>'+esc(r.text)+'</pre>'}catch(e){el.textContent=e.code==='not_granted'?'Autorisation refusée.':'Erreur : '+(e.message||'réessayez')}}
+async function gen(){const g=id=>document.getElementById(id).value;const t=g('topic');if(!t.trim()){alert('Saisissez un sujet.');return}
+S.brief={topic:t,niche:g('niche'),audience:g('audience'),lang:g('lang'),tone:g('tone'),style:g('style'),dur:g('dur')};const b=S.brief;
+const sm=await claude.use('sample');if(!sm){genOld();return}
+S.script='';S.approved=false;S.step=1;location.hash='scripts';go();const ta=()=>document.getElementById('sc');if(ta())ta().value='Rédaction en cours…';
+try{const r=await sm('Tu es scénariste vidéo professionnel. Écris le script détaillé d’une vidéo YouTube.\nSujet : '+b.topic+'\nNiche : '+(b.niche||'non précisée')+'\nPublic : '+(b.audience||'non précisé')+'\nLangue : '+b.lang+'\nTon : '+b.tone+'\nDurée : '+b.dur+'\nFormat : TITRE, ACCROCHE (0:00–0:20), chapitres avec minutage approximatif, narration prête à lire, indications visuelles entre crochets, CONCLUSION + APPEL À L’ACTION. Ajoute à la fin 3 variantes courtes de 30 s pour TikTok/Reels/Shorts. Règles : n’invente aucune source, aucune statistique ni citation ; marque [À VÉRIFIER] toute affirmation factuelle.',{cache:false,modelTier:'default',onText:({text})=>{S.script=text;if(ta())ta().value=text}});S.script=r.text}catch(e){if(e.code==='not_granted'){alert('Autorisation refusée : gabarit local utilisé.');genOld();return}S.script=S.script||'Erreur : '+(e.message||'génération impossible')}
+go()}
+function genOld(){const g=id=>document.getElementById(id).value;S.brief={topic:g("topic"),niche:g("niche"),audience:g("audience"),lang:g("lang"),tone:g("tone"),style:g("style"),dur:g("dur")};
+if(!S.brief.topic.trim()){alert("Saisissez un sujet.");return}
+const b=S.brief;S.script=`TITRE PROVISOIRE : ${b.topic}\nPublic : ${b.audience||"à préciser"} · Niche : ${b.niche||"à préciser"} · Ton : ${b.tone} · Durée : ${b.dur}\n\nACCROCHE (0:00–0:20)\n[À écrire : une promesse claire en une phrase]\n\nCHAPITRE 1 — Le problème\n[Points clés à développer]\n\nCHAPITRE 2 — La méthode\n[Étapes concrètes]\n\nCHAPITRE 3 — Exemple\n[Cas réel à vérifier avant tournage]\n\nCONCLUSION + APPEL À L’ACTION\n[Abonnement, ressource, prochaine vidéo]\n\n⚠ À VÉRIFIER : chaque chiffre ou affirmation factuelle. Aucune source n’est citée.`;
+S.approved=false;S.step=1;location.hash="scripts";go()}
+function approve(){S.script=document.getElementById("sc").value;S.approved=true;S.step=2;go()}
+function go(){const h=(location.hash||"#dashboard").slice(1),k=V[h]?h:"dashboard";
+document.getElementById("nav").innerHTML='<div class="logo">Atelier<b>.</b></div>'+NAV.map(n=>`<a href="#${n[0]}" class="${n[0]==k?"on":""}">${n[1]}</a>`).join("");
+document.getElementById("v").innerHTML=V[k]();document.documentElement.style.setProperty("--ac",S.brand.color!="#c2410c"?S.brand.color:"")}
+addEventListener("hashchange",go);go();
+</script>
+</body>
+</html>
